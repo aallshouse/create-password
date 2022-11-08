@@ -8,6 +8,7 @@ public class PasswordBuilder
     private bool _uppercase = false;
     private bool _numbers = false;
     private bool _symbols = false;
+    private string _allowedSymbols = "!@#$%^&*()";
 
     public PasswordBuilder()
     {
@@ -43,6 +44,13 @@ public class PasswordBuilder
         _symbols = true;
         return this;
     }
+    
+    public PasswordBuilder Symbols(string symbols)
+    {
+        _symbols = true;
+        _allowedSymbols = symbols;
+        return this;
+    }
 
     public string Build()
     {
@@ -52,19 +60,43 @@ public class PasswordBuilder
         var random = new Random();
         var chars = new List<char>();
 
-        if (_lowercase)
-            chars.AddRange("abcdefghijklmnopqrstuvwxyz");
-        if (_uppercase)
-            chars.AddRange("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-        if (_numbers)
-            chars.AddRange("0123456789");
-        if (_symbols)
-            chars.AddRange("!@#$%^&*()");
+        AddAllowedLowercaseCharacters(chars);
+        AddAllowedUppercaseCharacters(chars);
+        AddAllowedNumbers(chars);
+        AddAllowedSymbols(chars);
 
         var password = new char[_length];
         for (int i = 0; i < _length; i++)
             password[i] = chars[random.Next(chars.Count)];
 
         return new string(password);
+    }
+
+    private void AddAllowedNumbers(List<char> chars)
+    {
+        if (!_numbers) return;
+
+        chars.AddRange("0123456789");
+    }
+
+    private void AddAllowedUppercaseCharacters(List<char> chars)
+    {
+        if (!_uppercase) return;
+        
+        chars.AddRange("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    }
+
+    private void AddAllowedSymbols(List<char> chars)
+    {
+        if (!_symbols) return;
+
+        chars.AddRange(_allowedSymbols);
+    }
+
+    private void AddAllowedLowercaseCharacters(List<char> chars)
+    {
+        if (!_lowercase) return;
+        
+        chars.AddRange("abcdefghijklmnopqrstuvwxyz");
     }
 }

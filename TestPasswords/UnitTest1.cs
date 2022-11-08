@@ -5,23 +5,19 @@ namespace TestPasswords;
 
 public class Tests
 {
+    private PasswordBuilder _passwordBuilder;
+    
     [SetUp]
     public void Setup()
     {
-    }
-
-    [Test]
-    public void Test1()
-    {
-        Assert.Pass();
+        _passwordBuilder = new PasswordBuilder();
     }
     
     // test building a password with a length of 8
     [Test]
     public void TestPasswordLength()
     {
-        var passwordGenerator = new PasswordBuilder();
-        var password = passwordGenerator
+        var password = _passwordBuilder
             .Length(8)
             .Lowercase()
             .Uppercase()
@@ -35,8 +31,7 @@ public class Tests
     [Test]
     public void TestPasswordWithoutSymbols()
     {
-        var passwordGenerator = new PasswordBuilder();
-        var password = passwordGenerator
+        var password = _passwordBuilder
             .Length(8)
             .Lowercase()
             .Uppercase()
@@ -50,8 +45,7 @@ public class Tests
     [Test]
     public void TestPasswordOnlyLetters()
     {
-        var passwordGenerator = new PasswordBuilder();
-        var password = passwordGenerator
+        var password = _passwordBuilder
             .Length(8)
             .Lowercase()
             .Uppercase()
@@ -64,8 +58,7 @@ public class Tests
     [Test]
     public void TestPasswordWithSymbols()
     {
-        var passwordGenerator = new PasswordBuilder();
-        var password = passwordGenerator
+        var password = _passwordBuilder
             .Length(8)
             .Lowercase()
             .Uppercase()
@@ -73,5 +66,20 @@ public class Tests
             .Build();
         password.Should()
             .NotContainAny("1", "2", "3", "4", "5", "6", "7", "8", "9", "0");
+    }
+    
+    // test building a password with uppercase, lowercase, numbers, and specific symbols
+    [Test]
+    public void TestPasswordWithSpecificSymbols()
+    {
+        var password = _passwordBuilder
+            .Length(8)
+            .Lowercase()
+            .Uppercase()
+            .Numbers()
+            .Symbols("!@#")
+            .Build();
+        password.Should()
+            .NotContainAny("$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", "[", "]", "{", "}", "|", ";", ":", "'", "\"", ",", "<", ".", ">", "/", "?");
     }
 }
